@@ -33,7 +33,7 @@ public class WsConnection extends  Thread {
 
     @Override
     public void run() {
-        List<String> cmds = Arrays.asList( new String[] {"/bin/bash","/bin/sh"});
+        List<String> cmds = Arrays.asList( new String[] {"/bin/bash"});
         cmds.forEach((s) -> startProcess(s));
 
     }
@@ -44,8 +44,9 @@ public class WsConnection extends  Thread {
         String container = this.getPod().getContainer();
         Boolean tty = true;
         Boolean initValid = true;
+        String[] commandArr= new String[]{shellPath};
         try {
-            proc = exec.exec(namespace,name,new String[]{shellPath},container,true,tty);
+            proc = exec.exec(namespace,name,commandArr,container,true,tty);
             outputStream = proc.getOutputStream();
             inputStream = proc.getInputStream();
             try {
@@ -94,6 +95,7 @@ public class WsConnection extends  Thread {
     }
 
     //保险起见，最后关闭数据流
+    @Override
     protected void finalize() {
         try {
             outputStream.close();
